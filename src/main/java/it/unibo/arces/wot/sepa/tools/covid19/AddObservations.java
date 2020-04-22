@@ -95,11 +95,9 @@ ObservableProperties URI
 public class AddObservations extends Producer {
 	private HashMap<String,String> properties = new HashMap<String, String>();
 	
-	public AddObservations(String hostFile,ClientSecurityManager sm)
+	public AddObservations(JSAP jsap,ClientSecurityManager sm)
 			throws SEPAProtocolException, SEPASecurityException, SEPAPropertiesException, FileNotFoundException, IOException {
-		super(new JSAP("observations.jsap"), "ADD_OBSERVATION", sm);
-		
-		if (hostFile != null) appProfile.read(hostFile, true);
+		super(jsap, "ADD_OBSERVATION", sm);
 		
 		properties.put("ricoverati_con_sintomi", "covid19:HospitalisedWithSymptoms");
 		properties.put("terapia_intensiva", "covid19:IntensiveCare");
@@ -113,14 +111,6 @@ public class AddObservations extends Producer {
 		properties.put("totale_positivi", "covid19:TotalPositiveCases");
 		properties.put("nuovi_positivi", "covid19:DailyPositiveCases");
 		properties.put("variazione_totale_positivi", "covid19:DeltaTotalPositiveCases");
-	}
-	
-	public AddObservations(String hostFile) throws SEPAProtocolException, SEPASecurityException, SEPAPropertiesException, FileNotFoundException, IOException {
-		this(hostFile,null);
-	}
-	
-	public AddObservations() throws SEPAProtocolException, SEPASecurityException, SEPAPropertiesException, FileNotFoundException, IOException {
-		this(null,null);
 	}
 	
 	public void addNationalObservations(String graph,JsonArray array) throws FileNotFoundException, SEPABindingsException, SEPASecurityException, SEPAProtocolException, SEPAPropertiesException {
