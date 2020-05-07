@@ -93,12 +93,13 @@ ObservableProperties URI
  * 
  * */
 public class AddObservations extends Producer {
-	private HashMap<String,String> properties = new HashMap<String, String>();
-	
-	public AddObservations(JSAP jsap,ClientSecurityManager sm)
-			throws SEPAProtocolException, SEPASecurityException, SEPAPropertiesException, FileNotFoundException, IOException {
+	private HashMap<String, String> properties = new HashMap<String, String>();
+
+	public AddObservations(JSAP jsap, ClientSecurityManager sm) throws SEPAProtocolException, SEPASecurityException,
+			SEPAPropertiesException, FileNotFoundException, IOException {
 		super(jsap, "ADD_OBSERVATION", sm);
-		
+
+		// Properties mapping
 		properties.put("ricoverati_con_sintomi", "covid19:HospitalisedWithSymptoms");
 		properties.put("terapia_intensiva", "covid19:IntensiveCare");
 		properties.put("totale_ospedalizzati", "covid19:TotalHospitalised");
@@ -107,158 +108,175 @@ public class AddObservations extends Producer {
 		properties.put("deceduti", "covid19:Death");
 		properties.put("totale_casi", "covid19:TotalCases");
 		properties.put("tamponi", "covid19:TestPerformed");
-		
+
 		properties.put("totale_positivi", "covid19:TotalPositiveCases");
+		properties.put("totale_attualmente_positivi", "covid19:TotalPositiveCases");
+
 		properties.put("nuovi_positivi", "covid19:DailyPositiveCases");
 		properties.put("variazione_totale_positivi", "covid19:DeltaTotalPositiveCases");
 	}
-	
-	public void addNationalObservations(String graph,JsonArray array) throws FileNotFoundException, SEPABindingsException, SEPASecurityException, SEPAProtocolException, SEPAPropertiesException {
+
+	public void addNationalObservations(String graph, JsonArray array) throws FileNotFoundException,
+			SEPABindingsException, SEPASecurityException, SEPAProtocolException, SEPAPropertiesException {
 		/*
-		 *     {
-        "data": "2020-03-31T17:00:00",
-        "stato": "ITA",
-        "ricoverati_con_sintomi": 28192,
-        "terapia_intensiva": 4023,
-        "totale_ospedalizzati": 32215,
-        "isolamento_domiciliare": 45420,
-        "totale_positivi": 77635,
-        "variazione_totale_positivi": 2107,
-        "nuovi_positivi": 4053,
-        "dimessi_guariti": 15729,
-        "deceduti": 12428,
-        "totale_casi": 105792,
-        "tamponi": 506968,
-        "note_it": "",
-        "note_en": ""
+		 * { "data": "2020-03-31T17:00:00", "stato": "ITA", "ricoverati_con_sintomi":
+		 * 28192, "terapia_intensiva": 4023, "totale_ospedalizzati": 32215,
+		 * "isolamento_domiciliare": 45420, "totale_positivi": 77635,
+		 * "variazione_totale_positivi": 2107, "nuovi_positivi": 4053,
+		 * "dimessi_guariti": 15729, "deceduti": 12428, "totale_casi": 105792,
+		 * "tamponi": 506968, "note_it": "", "note_en": ""
 		 * 
-		 * */
-		
+		 */
+
 //		JsonArray array = loadJsonArray("dpc-covid19-ita-andamento-nazionale-latest.json");
-		
+
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("ricoverati_con_sintomi");
 		list.add("terapia_intensiva");
 		list.add("totale_ospedalizzati");
 		list.add("isolamento_domiciliare");
+
 		list.add("totale_positivi");
+		list.add("totale_attualmente_positivi");
+
 		list.add("nuovi_positivi");
 		list.add("dimessi_guariti");
 		list.add("deceduti");
 		list.add("totale_casi");
 		list.add("tamponi");
 		list.add("variazione_totale_positivi");
-		
+
 		setUpdateBindingValue("unit", new RDFTermURI("unit:Number"));
 		setUpdateBindingValue("graph", new RDFTermURI(graph));
-		
+
 		for (JsonElement country : array) {
-			String placeURIString = new String("http://covid19/context/country/" +country.getAsJsonObject().get("stato").getAsString().replace(" ", "_").replace("'", "_"));
-			
+			String placeURIString = new String("http://covid19/context/country/"
+					+ country.getAsJsonObject().get("stato").getAsString().replace(" ", "_").replace("'", "_"));
+
 			RDFTermURI place = new RDFTermURI(placeURIString);
-			RDFTermLiteral timestamp = new RDFTermLiteral(country.getAsJsonObject().get("data").getAsString().replace(" ", "T").concat("Z"));
-			
-			setUpdateBindingValue("place",place );
+			RDFTermLiteral timestamp = new RDFTermLiteral(
+					country.getAsJsonObject().get("data").getAsString().replace(" ", "T").concat("Z"));
+
+			setUpdateBindingValue("place", place);
 			setUpdateBindingValue("timestamp", timestamp);
-			
+
 			for (String pro : list) {
 				RDFTermURI property = new RDFTermURI(properties.get(pro));
-				RDFTermLiteral value = new RDFTermLiteral(String.valueOf(country.getAsJsonObject().get(pro).getAsInt()));
-				
-				setUpdateBindingValue("property", property);			
-				setUpdateBindingValue("value", value);	
-			
-				logger.info("Country: "+place+ " Property: "+property+" Value: " +value+ " Timestamp: "+timestamp); 
-				
-				update();
-			}	
+
+				if (country.getAsJsonObject().has(pro)) {
+					RDFTermLiteral value = new RDFTermLiteral(
+							String.valueOf(country.getAsJsonObject().get(pro).getAsInt()));
+
+					setUpdateBindingValue("property", property);
+					setUpdateBindingValue("value", value);
+
+					logger.info("Country: " + place + " Property: " + property + " Value: " + value + " Timestamp: "
+							+ timestamp);
+
+					update();
+				}
+			}
 		}
 	}
 
-	public void addRegionObservations(String graph,JsonArray array) throws FileNotFoundException, SEPABindingsException, SEPASecurityException, SEPAProtocolException, SEPAPropertiesException {
-		/*		 
+	public void addRegionObservations(String graph, JsonArray array) throws FileNotFoundException,
+			SEPABindingsException, SEPASecurityException, SEPAProtocolException, SEPAPropertiesException {
+		/*
 		 * "totale_attualmente_positivi" ==> "totale_positivi"
-		 * "nuovi_attualmente_positivi" ==> "nuovi_positivi" 
+		 * "nuovi_attualmente_positivi" ==> "nuovi_positivi"
 		 * 
-		 * NUOVA PROPRIETA'
-		 * "variazione_totale_positivi" ???
+		 * NUOVA PROPRIETA' "variazione_totale_positivi" ???
 		 * 
 		 * 
-		 * "totale_positivi":1191,
-		 * "variazione_totale_positivi":22,
-		 * "nuovi_positivi":56,
+		 * "totale_positivi":1191, "variazione_totale_positivi":22, "nuovi_positivi":56,
 		 * 
-		 * */
+		 */
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("ricoverati_con_sintomi");
 		list.add("terapia_intensiva");
 		list.add("totale_ospedalizzati");
 		list.add("isolamento_domiciliare");
+
 		list.add("totale_positivi");
+		list.add("totale_attualmente_positivi");
+
 		list.add("nuovi_positivi");
 		list.add("dimessi_guariti");
 		list.add("deceduti");
 		list.add("totale_casi");
 		list.add("tamponi");
 		list.add("variazione_totale_positivi");
-		
+
 		setUpdateBindingValue("unit", new RDFTermURI("unit:Number"));
 		setUpdateBindingValue("graph", new RDFTermURI(graph));
-		
+
 		for (JsonElement prov : array) {
-			String placeURIString = new String("http://covid19/Italy/Region/" +prov.getAsJsonObject().get("denominazione_regione").getAsString().replace(" ", "_").replace("'", "_"));
-			
+			String placeURIString = new String("http://covid19/Italy/Region/"
+					+ prov.getAsJsonObject().get("denominazione_regione").getAsString().replace(" ", "_"));
+
 			// FIX
-			if (placeURIString.endsWith("Emilia-Romagna")) placeURIString = placeURIString.replace("-", "_");
-			
+			if (placeURIString.endsWith("Emilia-Romagna"))
+				placeURIString = placeURIString.replace("-", "_");
+
 			RDFTermURI place = new RDFTermURI(placeURIString);
-			RDFTermLiteral timestamp = new RDFTermLiteral(prov.getAsJsonObject().get("data").getAsString().replace(" ", "T").concat("Z"));
-			
-			setUpdateBindingValue("place",place );
+			RDFTermLiteral timestamp = new RDFTermLiteral(
+					prov.getAsJsonObject().get("data").getAsString().replace(" ", "T").concat("Z"));
+
+			setUpdateBindingValue("place", place);
 			setUpdateBindingValue("timestamp", timestamp);
-			
+
 			for (String pro : list) {
 				RDFTermURI property = new RDFTermURI(properties.get(pro));
-				RDFTermLiteral value = new RDFTermLiteral(String.valueOf(prov.getAsJsonObject().get(pro).getAsInt()));
-				
-				setUpdateBindingValue("property", property);			
-				setUpdateBindingValue("value", value);	
-			
-				logger.info("Region: "+place+ " Property: "+property+" Value: " +value+ " Timestamp: "+timestamp); 
-				
-				update();
-			}	
+
+				if (prov.getAsJsonObject().has(pro)) {
+					RDFTermLiteral value = new RDFTermLiteral(
+							String.valueOf(prov.getAsJsonObject().get(pro).getAsInt()));
+
+					setUpdateBindingValue("property", property);
+					setUpdateBindingValue("value", value);
+
+					logger.info("Region: " + place + " Property: " + property + " Value: " + value + " Timestamp: "
+							+ timestamp);
+
+					update();
+				}
+			}
 		}
 	}
-	
-	public void addProvinceObservations(String graph,JsonArray array) throws FileNotFoundException, SEPABindingsException, SEPASecurityException, SEPAProtocolException, SEPAPropertiesException {	
+
+	public void addProvinceObservations(String graph, JsonArray array) throws FileNotFoundException,
+			SEPABindingsException, SEPASecurityException, SEPAProtocolException, SEPAPropertiesException {
 		setUpdateBindingValue("unit", new RDFTermURI("unit:Number"));
 		setUpdateBindingValue("graph", new RDFTermURI(graph));
-		
+
 		for (JsonElement prov : array) {
-			RDFTermURI place = new RDFTermURI("http://covid19/Italy/Province/" + prov.getAsJsonObject().get("denominazione_provincia").getAsString().replace(" ", "_").replace("'", "_"));
-			RDFTermLiteral timestamp = new RDFTermLiteral(prov.getAsJsonObject().get("data").getAsString().replace(" ", "T").concat("Z"));
+			RDFTermURI place = new RDFTermURI("http://covid19/Italy/Province/"
+					+ prov.getAsJsonObject().get("denominazione_provincia").getAsString().replace(" ", "_"));
+
+			RDFTermLiteral timestamp = new RDFTermLiteral(
+					prov.getAsJsonObject().get("data").getAsString().replace(" ", "T").concat("Z"));
 			RDFTermURI property = new RDFTermURI(properties.get("totale_casi"));
-			RDFTermLiteral value =  new RDFTermLiteral(String.valueOf(prov.getAsJsonObject().get("totale_casi").getAsInt()));
-			
-			setUpdateBindingValue("place", place);			
+			RDFTermLiteral value = new RDFTermLiteral(
+					String.valueOf(prov.getAsJsonObject().get("totale_casi").getAsInt()));
+
+			setUpdateBindingValue("place", place);
 			setUpdateBindingValue("timestamp", timestamp);
-			
-			setUpdateBindingValue("property", property );
+
+			setUpdateBindingValue("property", property);
 			setUpdateBindingValue("value", value);
-			
-			logger.info("Province: "+place+ " Property: "+property+" Value: " +value+ " Timestamp: "+timestamp);
-			
+
+			logger.info("Province: " + place + " Property: " + property + " Value: " + value + " Timestamp: " + timestamp);
+
 			update();
 		}
 	}
-	
+
 	public static JsonArray loadJsonArray(String jsapFile) throws FileNotFoundException {
 		FileReader in = new FileReader(jsapFile);
-		
+
 		return new JsonParser().parse(in).getAsJsonArray();
 	}
-	
+
 	public static JsonArray loadCSVProvince(String csv) throws IOException {
 		FileReader in = new FileReader(csv);
 
@@ -281,9 +299,9 @@ public class AddObservations extends Producer {
 				ret.add(elem);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				logger.error(e.getMessage());
-				logger.error("Wrong line: "+line);
+				logger.error("Wrong line: " + line);
 			}
-			
+
 		}
 
 		br.close();
@@ -331,7 +349,7 @@ public class AddObservations extends Producer {
 
 		return ret;
 	}
-	
+
 	public static JsonArray loadCSVNazionale(String csv) throws IOException {
 		FileReader in = new FileReader(csv);
 
@@ -342,8 +360,8 @@ public class AddObservations extends Producer {
 		// Skip first line
 		br.readLine();
 
-		//data,stato,ricoverati_con_sintomi,terapia_intensiva,totale_ospedalizzati,isolamento_domiciliare,totale_positivi,variazione_totale_positivi,nuovi_positivi,dimessi_guariti,deceduti,totale_casi,tamponi,note_it,note_en
-		
+		// data,stato,ricoverati_con_sintomi,terapia_intensiva,totale_ospedalizzati,isolamento_domiciliare,totale_positivi,variazione_totale_positivi,nuovi_positivi,dimessi_guariti,deceduti,totale_casi,tamponi,note_it,note_en
+
 		JsonArray ret = new JsonArray();
 		while ((line = br.readLine()) != null) {
 			String[] fields = line.split(",");
@@ -351,14 +369,14 @@ public class AddObservations extends Producer {
 			JsonElement elem = new JsonObject();
 			elem.getAsJsonObject().add("data", new JsonPrimitive(fields[0]));
 			elem.getAsJsonObject().add("stato", new JsonPrimitive(fields[1]));
-			
+
 			elem.getAsJsonObject().add("ricoverati_con_sintomi", new JsonPrimitive(fields[2]));
 			elem.getAsJsonObject().add("terapia_intensiva", new JsonPrimitive(fields[3]));
 			elem.getAsJsonObject().add("totale_ospedalizzati", new JsonPrimitive(fields[4]));
 			elem.getAsJsonObject().add("isolamento_domiciliare", new JsonPrimitive(fields[5]));
 			elem.getAsJsonObject().add("totale_positivi", new JsonPrimitive(fields[6]));
 			elem.getAsJsonObject().add("variazione_totale_positivi", new JsonPrimitive(fields[7]));
-			
+
 			elem.getAsJsonObject().add("nuovi_positivi", new JsonPrimitive(fields[8]));
 			elem.getAsJsonObject().add("dimessi_guariti", new JsonPrimitive(fields[9]));
 			elem.getAsJsonObject().add("deceduti", new JsonPrimitive(fields[10]));

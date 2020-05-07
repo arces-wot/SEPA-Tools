@@ -23,13 +23,6 @@
 		}
 	},
 	"queries": {
-		"WATCHDOG_IN": {
-			"sparql": "SELECT * WHERE {GRAPH <http://wot.arces.unibo.it/forecast> { ?forecast rdf:type sosa:Observation ; rdf:type swamp:Forecast; sosa:hasFeatureOfInterest ?place ; sosa:observedProperty ?property ; sosa:resultTime ?time ; sosa:phenomenonTime ?ptime ; sosa:hasResult ?result . ?result rdf:type qudt:QuantityValue ; rdf:type sosa:Result ; qudt:unit ?unit ; qudt:numericValue ?value} }",
-			"forcedBindings": {
-				"place": {
-					"type": "uri"
-				}
-			}
-		}
+
 	}
 }

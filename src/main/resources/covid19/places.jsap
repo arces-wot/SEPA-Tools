@@ -100,7 +100,16 @@
 	},
 	"queries": {
 		"REGIONS" : {
-			"sparql": "SELECT ?place ?name FROM ?context WHERE {?place rdf:type gn:Feature ; gn:featureClass 'ADM1' ; gn:name ?name}",
+			"sparql": "SELECT ?place ?name FROM ?context WHERE {?place rdf:type gn:Feature ; gn:featureClass gn:A ; gn:featureCode gn:A.ADM1 ; gn:name ?name}",
+			"forcedBindings": {
+				"context": {
+					"type": "uri",
+					"value": "http://covid19/context"
+				}
+			}
+		},
+		"PROVINCES" : {
+			"sparql": "SELECT ?place ?name FROM ?context WHERE {?place rdf:type gn:Feature ; gn:featureClass gn:A ; gn:featureCode gn:A.ADM2 ; gn:name ?name}",
 			"forcedBindings": {
 				"context": {
 					"type": "uri",
@@ -149,7 +158,7 @@
 			}
 		},
 		"MAP_PLACES_TOTALCASES": {
-				"sparql": "SELECT * FROM ?context FROM ?observation WHERE {?place rdf:type gn:Feature ; gn:countryCode ?code ; gn:featureClass ?class ; gn:name ?name ;  gn:lat ?lat ; gn:long ?lon . ?obs rdf:type sosa:Observation ; sosa:observedProperty <http://covid19#TotalCases>; sosa:hasResult ?res; sosa:hasFeatureOfInterest ?place . ?res qudt:numericValue ?cases . FILTER NOT EXISTS {?place gn:parentFeature ?parent}}",
+				"sparql": "SELECT * FROM ?context FROM ?observation WHERE {?place rdf:type gn:Feature ; gn:featureCode gn:A.ADM1 ; gn:name ?name ;  gn:lat ?lat ; gn:long ?lon . ?obs rdf:type sosa:Observation ; sosa:observedProperty <http://covid19#TotalCases>; sosa:hasResult ?res; sosa:hasFeatureOfInterest ?place . ?res qudt:numericValue ?cases }",
 				"forcedBindings": {
 				"observation": {
 					"type": "uri",
