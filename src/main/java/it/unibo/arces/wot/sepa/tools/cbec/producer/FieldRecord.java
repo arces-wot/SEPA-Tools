@@ -35,7 +35,7 @@ public class FieldRecord extends Producer {
 		if (!jsonObject.has("CODICEUTENTE")) throw new IllegalArgumentException("CODICEUTENTE is missing");
 		
 		if (jsonObject.has("geometry")) {
-			geometry = new JsonParser().parse(jsonObject.get("geometry").getAsString()).getAsJsonObject(); 	
+			geometry = JsonParser.parseString(jsonObject.get("geometry").getAsString()).getAsJsonObject(); 	
 		}
 		
 		code = jsonObject.get("CODICEAPP").getAsString().trim();

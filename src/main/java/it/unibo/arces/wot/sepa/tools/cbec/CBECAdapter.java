@@ -68,7 +68,7 @@ public abstract class CBECAdapter {
 			ret = httpsClient.execute(get);
 			responseEntity = ret.getEntity();
 			String responseBody = EntityUtils.toString(responseEntity, Charset.forName("UTF-8"));
-			JsonObject json = new JsonParser().parse(responseBody).getAsJsonObject();
+			JsonObject json = JsonParser.parseString(responseBody).getAsJsonObject();
 			return json;
 		} catch (IOException e) {
 			logger.error(e.getMessage());

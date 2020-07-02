@@ -293,7 +293,7 @@ public class AddObservations extends Producer {
 	public static JsonArray loadJsonArray(String jsapFile) throws FileNotFoundException {
 		FileReader in = new FileReader(jsapFile);
 
-		return new JsonParser().parse(in).getAsJsonArray();
+		return JsonParser.parseReader(in).getAsJsonArray();
 	}
 
 	public static JsonArray loadCSVProvince(String csv) throws IOException {
