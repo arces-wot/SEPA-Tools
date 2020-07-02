@@ -45,7 +45,7 @@ public class SEPAChatTest {
 		users = new Users();
 	}
 
-	//@Test // (timeout = 5000)
+	@Test // (timeout = 5000)
 	public void basicChatTest() throws SEPAProtocolException, SEPAPropertiesException, SEPASecurityException,
 			InterruptedException, IOException, SEPABindingsException {
 
