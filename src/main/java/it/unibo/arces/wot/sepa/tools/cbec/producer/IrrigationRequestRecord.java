@@ -27,7 +27,7 @@ public class IrrigationRequestRecord extends Producer {
 	private String codiceApp;
 	
 	public IrrigationRequestRecord(JsonObject jsonObject) throws IllegalArgumentException, ParseException, SEPAProtocolException, SEPASecurityException, SEPAPropertiesException, SEPABindingsException{
-		super(new JSAP("swamp.jsap"), "UPDATE_OBSERVATION_VALUE", null);
+		super(new JSAP("swamp.jsap"), "IRRIGATION_REQUEST", null);
 		
 		if (!jsonObject.has("NUMPREN")) throw new IllegalArgumentException("NUMPREN is missing");
 		if (!jsonObject.has("NUMRICHIESTA")) throw new IllegalArgumentException("NUMPREN is missing");
@@ -40,7 +40,7 @@ public class IrrigationRequestRecord extends Producer {
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		dataPren = format.parse(jsonObject.get("DATARICHIESTA").getAsString().split(" ")[0]);
-		SimpleDateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		SimpleDateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd'T'12:00:00.000Z");
 		
 		setUpdateBindingValue("fieldUri", new RDFTermURI("http://swamp-project.org/cbec/field_"+codiceApp));
 		setUpdateBindingValue("requestNumber", new RDFTermLiteral(numRichiesta));
@@ -48,6 +48,25 @@ public class IrrigationRequestRecord extends Producer {
 		setUpdateBindingValue("timestamp", new RDFTermLiteral(timestamp.format(dataPren)));
 	}
 	
+	public String getRequestNumber() {
+		return numRichiesta;
+	}
+	
+	public String getReservationNumber() {
+		return numPren;
+	}
+	
+	public Date getReservationDate() {
+		return dataPren;
+	}
+	
+	public String getFarmerCode() {
+		return codiceApp;
+	}
+	
+	public String toString() {
+		return "Irrigation request n:"+numPren+" req:"+numRichiesta+" date:"+dataPren+" field:"+codiceApp;
+	}
 	
 	@Override
     public boolean equals(Object obj) {

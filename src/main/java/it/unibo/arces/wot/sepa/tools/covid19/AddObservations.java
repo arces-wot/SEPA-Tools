@@ -17,6 +17,7 @@ import it.unibo.arces.wot.sepa.commons.exceptions.SEPABindingsException;
 import it.unibo.arces.wot.sepa.commons.exceptions.SEPAPropertiesException;
 import it.unibo.arces.wot.sepa.commons.exceptions.SEPAProtocolException;
 import it.unibo.arces.wot.sepa.commons.exceptions.SEPASecurityException;
+import it.unibo.arces.wot.sepa.commons.response.Response;
 import it.unibo.arces.wot.sepa.commons.security.ClientSecurityManager;
 import it.unibo.arces.wot.sepa.commons.sparql.RDFTermLiteral;
 import it.unibo.arces.wot.sepa.commons.sparql.RDFTermURI;
@@ -173,7 +174,13 @@ public class AddObservations extends Producer {
 					logger.info("Country: " + place + " Property: " + property + " Value: " + value + " Timestamp: "
 							+ timestamp);
 
-					update();
+					Response retResponse = update();
+					int nRetry = 5;
+					while(retResponse.isError() && nRetry > 0) {
+						logger.error(retResponse);
+						retResponse = update();
+						nRetry = nRetry -1;
+					}
 				}
 			}
 		}
@@ -238,7 +245,13 @@ public class AddObservations extends Producer {
 					logger.info("Region: " + place + " Property: " + property + " Value: " + value + " Timestamp: "
 							+ timestamp);
 
-					update();
+					Response retResponse = update();
+					int nRetry = 5;
+					while(retResponse.isError() && nRetry > 0) {
+						logger.error(retResponse);
+						retResponse = update();
+						nRetry = nRetry -1;
+					}
 				}
 			}
 		}
@@ -267,7 +280,13 @@ public class AddObservations extends Producer {
 
 			logger.info("Province: " + place + " Property: " + property + " Value: " + value + " Timestamp: " + timestamp);
 
-			update();
+			Response retResponse = update();
+			int nRetry = 5;
+			while(retResponse.isError() && nRetry > 0) {
+				logger.error(retResponse);
+				retResponse = update();
+				nRetry = nRetry -1;
+			}
 		}
 	}
 

@@ -1,14 +1,15 @@
-{   "namespaces": {
+{
+	"namespaces": {
 		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
 		"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
 		"xsd": "http://www.w3.org/2001/XMLSchema#",
 		"swamp": "http://swamp-project.org/ontology/swamp#",
-		"time" : "http://www.w3.org/2006/time#",
-		"schema" : "http:/schema.org/"
+		"time": "http://www.w3.org/2006/time#",
+		"schema": "http:/schema.org/"
 	},
-	"updates" : {
+	"updates": {
 		"IRRIGATION_REQUEST": {
-			"sparql": "WITH <http://swamp-project.org/cbec/irrigation> INSERT {_:irr rdf:type swamp:IrrigationRequest ; time:inXSDDateTimeStamp ?timestamp ; swamp:issuedBy swamp:CBEC ; swamp:hasCurrentStatus swamp:Scheduled ; swamp:requestNumber ?requestNumber ; swamp:reservationNumber ?reservationNumber ; swamp:hasField ?fieldUri ; swamp:hasStatus _:status . _:status time:inXSDDateTimeStamp ?timestamp ; swamp:requestStatus swamp:Scheduled } WHERE {FILTER NOT EXISTS{?req rdf:type swamp:IrrigationRequest ; swamp:hasField ?fieldUri ; time:inXSDDateTimeStamp ?timestamp}}",
+			"sparql": "WITH <http://swamp-project.org/cbec/irrigation> INSERT {_:irr rdf:type swamp:IrrigationRequest ; time:inXSDDateTimeStamp ?timestamp ; swamp:issuedBy swamp:CBEC ; swamp:hasCurrentStatus swamp:Scheduled ; swamp:requestNumber ?requestNumber ; swamp:reservationNumber ?reservationNumber ; swamp:hasField ?fieldUri ; swamp:hasStatus _:status . _:status time:inXSDDateTimeStamp ?timestamp ; swamp:requestStatus swamp:Scheduled } WHERE {}",
 			"forcedBindings": {
 				"fieldUri": {
 					"type": "uri",
@@ -30,7 +31,7 @@
 			}
 		},
 		"FIELD": {
-			"sparql": "WITH <http://swamp-project.org/cbec/field> INSERT {?fieldUri rdf:type swamp:Field ; swamp:hasGeometry ?geometry ; swamp:hasCanal ?canalUri ; swamp:hasCrop ?cropUri ; swamp:managedBy ?farmerUri} WHERE {FILTER NOT EXISTS{?fieldUri rdf:type swamp:Field}}",
+			"sparql": "WITH <http://swamp-project.org/cbec/field> DELETE {?fieldUri rdf:type swamp:Field ; swamp:hasGeometry ?ogeometry ; swamp:hasCanal ?ocanalUri ; swamp:hasCrop ?ocropUri ; swamp:managedBy ?ofarmerUri} INSERT {?fieldUri rdf:type swamp:Field ; swamp:hasGeometry ?geometry ; swamp:hasCanal ?canalUri ; swamp:hasCrop ?cropUri ; swamp:managedBy ?farmerUri} WHERE {OPTIONAL{?fieldUri rdf:type swamp:Field ; swamp:hasGeometry ?ogeometry ; swamp:hasCanal ?ocanalUri ; swamp:hasCrop ?ocropUri ; swamp:managedBy ?ofarmerUri}}",
 			"forcedBindings": {
 				"fieldUri": {
 					"type": "uri",
@@ -40,22 +41,22 @@
 					"type": "literal",
 					"value": "{\"type\":\"MultiPolygon\",\"coordinates\":[[[[10.7681246285252,44.7871501532278],[10.7691822859594,44.7868572560225],[10.768862501384,44.7861504903635],[10.7686125952206,44.7862091971362],[10.7682770307353,44.7855457619487],[10.7678559126928,44.7857750677654],[10.7681246285252,44.7871501532278]]]]}"
 				},
-				"canalUri" : {
-					"type" :"uri",
-					"value" : "http://swamp-project.org/cbec/canal_I4061"
+				"canalUri": {
+					"type": "uri",
+					"value": "http://swamp-project.org/cbec/canal_I4061"
 				},
-				"cropUri" : {
-					"type" :"uri",
-					"value" : "http://swamp-project.org/cbec/crop_78"
+				"cropUri": {
+					"type": "uri",
+					"value": "http://swamp-project.org/cbec/crop_78"
 				},
-				"farmerUri" : {
-					"type" :"uri",
-					"value" : "http://swamp-project.org/cbec/farmer_140703"
+				"farmerUri": {
+					"type": "uri",
+					"value": "http://swamp-project.org/cbec/farmer_140703"
 				}
 			}
 		},
 		"FARMER": {
-			"sparql": "WITH <http://swamp-project.org/cbec/farmer> INSERT {?farmerUri rdf:type swamp:Farmer ; rdf:type schema:Person ; swamp:hasFarmerCode ?farmerCode ; schema:givenName ?name ; schema:familyName ?surname} WHERE {FILTER NOT EXISTS{http://swamp-project.org/cbec/farmer_140703 rdf:type swamp:Farmer}}",
+			"sparql": "WITH <http://swamp-project.org/cbec/farmer> DELETE {?farmerUri rdf:type swamp:Farmer ; rdf:type schema:Person ; schema:givenName ?oname ; schema:familyName ?osurname} INSERT {?farmerUri rdf:type swamp:Farmer ; rdf:type schema:Person ; schema:givenName ?name ; schema:familyName ?surname} WHERE {OPTIONAL{?farmerUri rdf:type swamp:Farmer ; schema:givenName ?oname ; schema:familyName ?osurname}}",
 			"forcedBindings": {
 				"farmerUri": {
 					"type": "uri",
@@ -70,6 +71,26 @@
 					"value": "MONTANARI"
 				}
 			}
+		}
+	},
+	"queries": {
+		"IRRIGATION_REQUEST": {
+			"sparql": "SELECT * FROM <http://swamp-project.org/cbec/irrigation> WHERE {?irr rdf:type swamp:IrrigationRequest ; time:inXSDDateTimeStamp ?timestamp ; swamp:issuedBy swamp:CBEC ; swamp:hasCurrentStatus swamp:Scheduled ; swamp:requestNumber ?requestNumber ; swamp:reservationNumber ?reservationNumber ; swamp:hasField ?fieldUri ; swamp:hasStatus ?status . ?status time:inXSDDateTimeStamp ?timestamp ; swamp:requestStatus ?reqStatus}"
+		},
+		"IRRIGATION_REQUESTS_BY_FIELDS": {
+			"sparql": "SELECT * FROM <http://swamp-project.org/cbec/irrigation> WHERE {?irr rdf:type swamp:IrrigationRequest ; time:inXSDDateTimeStamp ?timestamp ; swamp:issuedBy swamp:CBEC ; swamp:hasCurrentStatus swamp:Scheduled ; swamp:requestNumber ?requestNumber ; swamp:reservationNumber ?reservationNumber ; swamp:hasField ?fieldUri ; swamp:hasStatus ?status . ?status time:inXSDDateTimeStamp ?timestamp ; swamp:requestStatus ?reqStatus} ORDER BY ?timestamp",
+			"forcedBindings": {
+				"fieldUri": {
+					"type": "uri",
+					"value": "http://swamp-project.org/cbec/field_23566"
+				}
+			}
+		},
+		"FIELD": {
+			"sparql": "SELECT * FROM <http://swamp-project.org/cbec/field> WHERE {?fieldUri rdf:type swamp:Field ; swamp:hasGeometry ?geometry ; swamp:hasCanal ?canalUri ; swamp:hasCrop ?cropUri ; swamp:managedBy ?farmerUri}"
+		},
+		"FARMER": {
+			"sparql": "SELECT * FROM <http://swamp-project.org/cbec/farmer> WHERE {?farmerUri rdf:type swamp:Farmer ; rdf:type schema:Person ; schema:givenName ?name ; schema:familyName ?surname}"
 		}
 	}
 }

@@ -34,7 +34,7 @@ public class CopyTool {
 		fb.addBinding("from", new RDFTermLiteral(from,"xsd:dateTime"));
 		fb.addBinding("to", new RDFTermLiteral(to,"xsd:dateTime"));
 		
-		Response ret = client.query("FROM_HISTORY", fb, 10000);
+		Response ret = client.query("FROM_HISTORY", fb);
 		// ---
 		
 		if (ret.isQueryResponse()) {
@@ -51,10 +51,10 @@ public class CopyTool {
 				// Virtuoso blank node representation
 				if (obs.getValue("result").startsWith("nodeID://")) {
 					String bNodeString = obs.getValue("result").replace("nodeID://", "_:");
-					obs.setBindingValue("result", new RDFTermBNode(bNodeString));
+					obs.addBinding("result", new RDFTermBNode(bNodeString));
 				}
 				
-				Response upd = client.update("TO_HISTORY", obs, 500);
+				Response upd = client.update("TO_HISTORY", obs);
 				// ---
 				
 				if (upd.isError()) {
@@ -85,7 +85,7 @@ public class CopyTool {
 		Bindings fb = new Bindings();
 		fb.addBinding("place", new RDFTermURI(place));
 		
-		Response ret = client.query("FROM_FORECAST", fb, 10000);
+		Response ret = client.query("FROM_FORECAST", fb);
 		// ---
 		
 		if (ret.isQueryResponse()) {
@@ -102,14 +102,14 @@ public class CopyTool {
 				// Virtuoso blank node representation
 				if (obs.getValue("result").startsWith("nodeID://")) {
 					String bNodeString = obs.getValue("result").replace("nodeID://", "_:");
-					obs.setBindingValue("result", new RDFTermBNode(bNodeString));
+					obs.addBinding("result", new RDFTermBNode(bNodeString));
 				}
 				if (obs.getValue("forecast").startsWith("nodeID://")) {
 					String bNodeString = obs.getValue("forecast").replace("nodeID://", "_:");
-					obs.setBindingValue("forecast", new RDFTermBNode(bNodeString));
+					obs.addBinding("forecast", new RDFTermBNode(bNodeString));
 				}
 				
-				Response upd = client.update("TO_FORECAST", obs, 500);
+				Response upd = client.update("TO_FORECAST", obs);
 				// ---
 				
 				if (upd.isError()) {

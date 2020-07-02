@@ -50,6 +50,26 @@ public class FieldRecord extends Producer {
 		setUpdateBindingValue("farmerUri", new RDFTermURI("http://swamp-project.org/cbec/farmer_"+farmerCode));
 	}
 	
+	public String getCode() {
+		return code;
+	}
+	
+	public String getCropCode() {
+		return cropCode;
+	}
+	
+	public String getCanalCode() {
+		return canalCode;
+	}
+	
+	public String getFarmerCode() {
+		return farmerCode;
+	}
+	
+	public String toString() {
+		return "Field code:"+code+" crop:"+cropCode+" canal:"+canalCode+" farmer:"+farmerCode;
+	}
+	
 	@Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -62,7 +82,7 @@ public class FieldRecord extends Producer {
         
         FieldRecord cmp = (FieldRecord) obj;
         
-        return cmp.hashCode() == this.hashCode();
+        return cmp.getCode().equals(this.getCode());
 	}
 	
 	@Override

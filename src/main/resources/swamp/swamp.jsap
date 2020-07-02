@@ -1,3 +1,14 @@
 {
-	"#include" : ["file:///host-mml.jsap","file:///observations.jsap","file:///irrigations.jsap"]
+	"#include": [
+		"file:///host-mml.jsap",
+		"file:///observations.jsap",
+		"file:///irrigations.jsap",
+		"file:///crop.jsap",
+		"file:///canal.jsap"
+	],
+	"extended": {
+		"misure": {
+			"filter": ["003-R24H","005-R24H","013-R24H"]
+		}
+	}
 }

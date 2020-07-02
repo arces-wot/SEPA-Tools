@@ -1,0 +1,75 @@
+{
+	"host": "localhost",
+	"oauth": {
+		"enable" : false,
+		"register": "https://localhost:8443/oauth/register",
+		"tokenRequest": "https://localhost:8443/oauth/token"
+	},
+	"sparql11protocol": {
+		"protocol": "http",
+		"port": 8000,
+		"query": {
+			"path": "/query",
+			"method": "POST",
+			"format": "JSON"
+		},
+		"update": {
+			"path": "/update",
+			"method": "POST",
+			"format": "JSON"
+		}
+	},
+	"sparql11seprotocol": {
+		"protocol": "ws",
+		"availableProtocols": {
+			"ws": {
+				"port": 9000,
+				"path": "/subscribe"
+			},
+			"wss": {
+				"port": 9443,
+				"path": "/secure/subscribe"
+			}
+		}
+	},
+	"namespaces": {
+		"docker": "http://sepa/docker#",
+		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	},
+	"updates": {
+		"COUNTER" : {
+			"sparql": "WITH <http://sepatest/> DELETE {?subject docker:count ?c} WHERE {?subject docker:count ?c} ; INSERT DATA {graph<http://sepatest/> {?subject docker:count ?count}}",
+			"forcedBindings": {
+				"subject": {
+					"type": "uri",
+					"value": "docker:ProducerURI"
+				},
+				"count": {
+					"type": "literal",
+					"value": "1"
+				}
+			}
+		},
+		"SUM": {
+			"sparql": "WITH <http://sepatest/> DELETE {?subject docker:sum ?c} WHERE {?subject docker:sum ?c} ; INSERT DATA {graph<http://sepatest/> {?subject docker:sum ?sum}}",
+			"forcedBindings": {
+				"subject": {
+					"type": "uri",
+					"value": "docker:ProducerURI"
+				},
+				"sum": {
+					"type": "literal",
+					"value": "1"
+				}
+			}
+		}
+	},
+	"queries": {
+		"COUNTER": {
+			"sparql": "SELECT * WHERE {GRAPH <http://sepatest/> {?subject docker:count ?count}}"
+		},
+		"SUM": {
+			"sparql": "SELECT * WHERE {GRAPH <http://sepatest/> {?subject docker:count ?sum}}"
+		}
+	}
+}

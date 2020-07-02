@@ -1,0 +1,32 @@
+{
+	"namespaces": {
+		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+		"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+		"swamp": "http://swamp-project.org/ontology/swamp#",
+		"agrovoc" : "http://aims.fao.org/aos/agrovoc/"
+	},
+	"updates": {
+		"CANAL": {
+			"sparql": "INSERT DATA { GRAPH <http://swamp-project.org/cbec/canal> {?canal rdf:type swamp:Canal ; rdf:type agrovoc:c_25340 ; swamp:hasCanalCode ?code ; rdfs:label ?label}}",
+			"forcedBindings": {
+				"canal": {
+					"type": "uri",
+					"value": "http://swamp-project.org/cbec/canal_I4061"
+				},
+				"code": {
+					"type": "literal",
+					"value": "I4061"
+				},
+				"label": {
+					"type": "literal",
+					"value": "MANDRIOLO"
+				}
+			}
+		}
+	},
+	"queries": {
+		"CANAL": {
+			"sparql": "SELECT * FROM <http://swamp-project.org/cbec/canal> WHERE {?canal rdf:type swamp:Canal ; rdf:type agrovoc:c_25340 ; swamp:hasCanalCode ?code ; rdfs:label ?label} ORDER BY ?label"
+		}
+	}
+}

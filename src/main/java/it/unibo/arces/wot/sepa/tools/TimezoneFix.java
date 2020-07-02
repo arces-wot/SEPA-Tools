@@ -62,7 +62,7 @@ public class TimezoneFix {
 				fBindings.addBinding("to", new RDFTermLiteral(toUTC, "xsd:dateTime"));
 				fBindings.addBinding("observation", new RDFTermURI(observation));
 
-				Response retResponse = client.query("LOG_QUANTITY", fBindings, 5000);
+				Response retResponse = client.query("LOG_QUANTITY", fBindings);
 
 				if (retResponse.isError())
 					logger.error("Failed to query");
@@ -82,7 +82,7 @@ public class TimezoneFix {
 
 						logger.info("Fixing timestamp: "+timestampString);
 						
-						retResponse = client.update("FIX_LOG", fix, 5000);
+						retResponse = client.update("FIX_LOG", fix);
 						if (retResponse.isError())
 							logger.error("Failed to update");
 					}
